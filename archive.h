@@ -290,6 +290,7 @@ class Archive
             char* str = new char[len];
             m_stream.read(str, len);
             v = std::string(str, len);
+            delete [] str;
             return *this;
         }
 
