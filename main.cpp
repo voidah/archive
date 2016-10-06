@@ -167,4 +167,57 @@ int main()
     // Serialize to/from file
     std::cout << "In/Out from file..." << std::endl;
     TestFile();
+
+    // invalid data, invalid string length
+    {
+        std::cout << "Testing invalid data (invalid string length), should throw an exception" << std::endl;
+        std::stringstream s1;
+        Archive<std::stringstream> a1(s1);
+        a1 << std::string("salut");
+
+        std::string data = s1.str();
+
+        // Corrupt string length:
+        data[0] = 255; // the first 4 bytes are the string length
+        data[1] = 255; // the first 4 bytes are the string length
+        data[2] = 255; // the first 4 bytes are the string length
+        data[2] = 255; // the first 4 bytes are the string length
+
+        // Try to read back the data:
+        try
+        {
+            std::istringstream s2(data);
+            Archive<std::istringstream> a2(s2);
+            std::string value;
+            a2 >> value;
+        }
+        catch(std::runtime_error e)
+        {
+            std::cout << "    GOOD! exception catched" << std::endl;
+        }
+    }
+
+    // invalid data, not enough data
+    {
+        std::cout << "Testing invalid data (not enough data), should throw an exception" << std::endl;
+        std::stringstream s1;
+        Archive<std::stringstream> a1(s1);
+        a1 << 'a';
+
+        std::string data = s1.str();
+        std::cout << data << std::endl;
+
+        // Try to read back the data:
+        try
+        {
+            std::istringstream s2(data);
+            Archive<std::istringstream> a2(s2);
+            int value;
+            a2 >> value;
+        }
+        catch(std::runtime_error e)
+        {
+            std::cout << "    GOOD! exception catched" << std::endl;
+        }
+    }
 }

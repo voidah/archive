@@ -4,12 +4,15 @@
 #include <stdint.h>
 #include <string>
 #include <cassert>
+#include <algorithm>
 
 #include <vector>
 #include <deque>
 #include <list>
 #include <set>
 #include <map>
+
+#include <exception>
 
 namespace EndianSwapper
 {
@@ -169,7 +172,7 @@ class Archive
             {
                 uint32_t len;
                 *this & len;
-                for(int i = 0; i < N; ++i)
+                for(size_t i = 0; i < N; ++i)
                     *this & v[i];
                 return *this;
             }
@@ -179,7 +182,7 @@ class Archive
             {
                 uint32_t len = N;
                 *this & len;
-                for(int i = 0; i < N; ++i)
+                for(size_t i = 0; i < N; ++i)
                     *this & v[i];
                 return *this;
             }
@@ -188,6 +191,7 @@ class Archive
         Archive& operator&(type& v) \
         { \
             m_stream.read((char*)&v, sizeof(type)); \
+            if(!m_stream) { throw std::runtime_error("malformed data"); } \
             v = Swap(v); \
             return *this; \
         } \
@@ -287,10 +291,18 @@ class Archive
         {
             uint32_t len;
             *this & len;
-            char* str = new char[len];
-            m_stream.read(str, len);
-            v = std::string(str, len);
-            delete [] str;
+            v.clear();
+            char buffer[4096];
+            uint32_t toRead = len;
+            while(toRead != 0)
+            {
+                uint32_t l = std::min(toRead, (uint32_t)sizeof(buffer));
+                m_stream.read(buffer, l);
+                if(!m_stream)
+                    throw std::runtime_error("malformed data");
+                v += std::string(buffer, l);
+                toRead -= l;
+            }
             return *this;
         }
 
