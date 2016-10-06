@@ -13,6 +13,7 @@
 #include <map>
 
 #include <exception>
+#include <stdexcept>
 
 namespace EndianSwapper
 {
