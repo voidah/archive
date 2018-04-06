@@ -105,7 +105,7 @@ namespace EndianSwapper
                 static T Swap(T v)
                 {
                     if(ShouldSwap())
-                        return (((uint64_t)SwapByte<T, 4>::Swap((uint32_t)(v & 0xffffffffull))) << 32) | (SwapByte<T, 4>::Swap((uint32_t)(v >> 32)));
+                        return (((uint64_t)SwapByte<uint32_t, 4>::Swap((uint32_t)(v & 0xffffffffull))) << 32) | (SwapByte<uint32_t, 4>::Swap((uint32_t)(v >> 32)));
                     return v;
                 }
         };
