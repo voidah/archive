@@ -145,7 +145,7 @@ namespace EndianSwapper
                     return f;
                 }
         };
-};
+}
 
 template <class STREAM_TYPE>
 class Archive
@@ -220,19 +220,19 @@ class Archive
             return *this; \
         } 
 
-        SERIALIZER_FOR_POD(bool);
-        SERIALIZER_FOR_POD(char);
-        SERIALIZER_FOR_POD(unsigned char);
-        SERIALIZER_FOR_POD(short);
-        SERIALIZER_FOR_POD(unsigned short);
-        SERIALIZER_FOR_POD(int);
-        SERIALIZER_FOR_POD(unsigned int);
-        SERIALIZER_FOR_POD(long);
-        SERIALIZER_FOR_POD(unsigned long);
-        SERIALIZER_FOR_POD(long long);
-        SERIALIZER_FOR_POD(unsigned long long);
-        SERIALIZER_FOR_POD(float);
-        SERIALIZER_FOR_POD(double);
+        SERIALIZER_FOR_POD(bool)
+        SERIALIZER_FOR_POD(char)
+        SERIALIZER_FOR_POD(unsigned char)
+        SERIALIZER_FOR_POD(short)
+        SERIALIZER_FOR_POD(unsigned short)
+        SERIALIZER_FOR_POD(int)
+        SERIALIZER_FOR_POD(unsigned int)
+        SERIALIZER_FOR_POD(long)
+        SERIALIZER_FOR_POD(unsigned long)
+        SERIALIZER_FOR_POD(long long)
+        SERIALIZER_FOR_POD(unsigned long long)
+        SERIALIZER_FOR_POD(float)
+        SERIALIZER_FOR_POD(double)
 
 
 #define SERIALIZER_FOR_STL(type) \
@@ -283,13 +283,13 @@ class Archive
             return *this; \
         }
 
-        SERIALIZER_FOR_STL(std::vector);
-        SERIALIZER_FOR_STL(std::deque);
-        SERIALIZER_FOR_STL(std::list);
-        SERIALIZER_FOR_STL(std::set);
-        SERIALIZER_FOR_STL(std::multiset);
-        SERIALIZER_FOR_STL2(std::map);
-        SERIALIZER_FOR_STL2(std::multimap);
+        SERIALIZER_FOR_STL(std::vector)
+        SERIALIZER_FOR_STL(std::deque)
+        SERIALIZER_FOR_STL(std::list)
+        SERIALIZER_FOR_STL(std::set)
+        SERIALIZER_FOR_STL(std::multiset)
+        SERIALIZER_FOR_STL2(std::map)
+        SERIALIZER_FOR_STL2(std::multimap)
 
         template <class T1, class T2>
             Archive& operator&(std::pair<T1, T2>& v)
