@@ -79,7 +79,7 @@ namespace EndianSwapper
                 static T Swap(T v)
                 {
                     if(ShouldSwap())
-                        return (v >> 8) | (v << 8);
+                        return ((uint16_t)v >> 8) | ((uint16_t)v << 8);
                     return v;
                 }
         };

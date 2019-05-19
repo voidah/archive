@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <limits.h>
 #include "archive.h"
 
 ////////////////////////////////////////////////////
@@ -126,19 +127,46 @@ int main()
     // POD
     std::cout << "POD..." << std::endl;
     Test(true);
+    
     Test((char)123);
+    Test((char)-123);
+    Test((char)SCHAR_MIN);
+    Test((char)SCHAR_MAX);
     Test((unsigned char)123);
+    Test((unsigned char)UCHAR_MAX);
+
     Test((short)123);
+    Test((short)-123);
+    Test((short)SHRT_MIN);
+    Test((short)SHRT_MAX);
     Test((unsigned short)123);
+
     Test((int)123);
+    Test((int)-123);
+    Test((int)INT_MIN);
+    Test((int)INT_MAX);
     Test((unsigned int)123);
+    Test((unsigned int)UINT_MAX);
+
     Test((long)123);
+    Test((long)-123);
+    Test((long)LONG_MIN);
+    Test((long)LONG_MAX);
     Test((unsigned long)123);
+    Test((unsigned long)ULONG_MAX);
+
     Test((long long)123);
+    Test((long long)-123);
+    Test((long long)LLONG_MIN);
+    Test((long long)LLONG_MAX);
     Test((unsigned long long)123);
+    Test((unsigned long long)ULLONG_MAX);
+
     Test(std::string("salut"));
     Test(123.456f);
+    Test(-123.456f);
     Test(123.456);
+    Test(-123.456);
 
     // Array
     std::cout << "Array..." << std::endl;
