@@ -87,7 +87,7 @@ void TestArray(T (&value)[N])
 void TestFile()
 {
     // Serialize to file
-    std::ofstream ofile("test.bin");
+    std::ofstream ofile("test.bin", std::ios::binary);
     Archive<std::ofstream> a(ofile);
     int i = 123;
     std::string name = "mouton";
@@ -104,7 +104,7 @@ void TestFile()
     float pi2;
     Message m2;
 
-    std::ifstream ifile("test.bin");
+    std::ifstream ifile("test.bin", std::ios::binary);
     if(!ifile.is_open())
     {
         std::cout << "ERROR file doesn't exist.." << std::endl;
