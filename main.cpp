@@ -219,7 +219,7 @@ int main()
             std::string value;
             a2 >> value;
         }
-        catch(std::runtime_error e)
+        catch(std::runtime_error& e)
         {
             std::cout << "    GOOD! exception catched" << std::endl;
         }
@@ -243,7 +243,7 @@ int main()
             int value;
             a2 >> value;
         }
-        catch(std::runtime_error e)
+        catch(std::runtime_error& e)
         {
             std::cout << "    GOOD! exception catched" << std::endl;
         }
