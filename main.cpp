@@ -206,10 +206,10 @@ int main()
         std::string data = s1.str();
 
         // Corrupt string length:
-        data[0] = 255; // the first 4 bytes are the string length
-        data[1] = 255; // the first 4 bytes are the string length
-        data[2] = 255; // the first 4 bytes are the string length
-        data[2] = 255; // the first 4 bytes are the string length
+        data[0] = (char)255; // the first 4 bytes are the string length
+        data[1] = (char)255; // the first 4 bytes are the string length
+        data[2] = (char)255; // the first 4 bytes are the string length
+        data[2] = (char)255; // the first 4 bytes are the string length
 
         // Try to read back the data:
         try
@@ -219,7 +219,7 @@ int main()
             std::string value;
             a2 >> value;
         }
-        catch(std::runtime_error& e)
+        catch(...)
         {
             std::cout << "    GOOD! exception catched" << std::endl;
         }
@@ -243,7 +243,7 @@ int main()
             int value;
             a2 >> value;
         }
-        catch(std::runtime_error& e)
+        catch(...)
         {
             std::cout << "    GOOD! exception catched" << std::endl;
         }
