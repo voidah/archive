@@ -209,7 +209,7 @@ int main()
         data[0] = (char)255; // the first 4 bytes are the string length
         data[1] = (char)255; // the first 4 bytes are the string length
         data[2] = (char)255; // the first 4 bytes are the string length
-        data[2] = (char)255; // the first 4 bytes are the string length
+        data[3] = (char)255; // the first 4 bytes are the string length
 
         // Try to read back the data:
         try
