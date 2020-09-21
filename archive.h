@@ -228,7 +228,36 @@ class Archive
             v = Swap(v); \
             m_stream.write((const char*)&v, sizeof(type)); \
             return *this; \
-        } 
+        }
+
+            // Special serializer for floating point values, can't directly swap on floating point variable
+            // because it might cause a NaN and the wrong value is read back (the problem occurs on vstudio)
+#define SERIALIZER_FOR_POD_FLOATINGPOINT(type) \
+        Archive& operator&(type& v) \
+        { \
+            union { type f; uint8_t c[sizeof(type)];}; \
+            m_stream.read((char*)&c[0], sizeof(type)); \
+            if (!m_stream) { throw std::runtime_error("malformed data"); } \
+			if (EndianSwapper::SwapByteBase::ShouldSwap()) \
+			{ \
+				for (int i = 0; i < sizeof(type) / 2; ++i) \
+					EndianSwapper::SwapByteBase::SwapBytes(c[i], c[sizeof(type) - 1 - i]); \
+			} \
+            v = f; \
+            return *this; \
+        } \
+		const Archive& operator&(type v) const \
+        { \
+            union { type f; uint8_t c[sizeof(type)];}; \
+            f = v; \
+            if (EndianSwapper::SwapByteBase::ShouldSwap()) \
+            { \
+                for (int i = 0; i < sizeof(type) / 2; ++i) \
+                    EndianSwapper::SwapByteBase::SwapBytes(c[i], c[sizeof(type) - 1 - i]); \
+            } \
+            m_stream.write((const char*)&c[0], sizeof(type)); \
+            return *this; \
+        }
 
         SERIALIZER_FOR_POD(bool)
         SERIALIZER_FOR_POD(char)
@@ -241,8 +270,8 @@ class Archive
         SERIALIZER_FOR_POD(unsigned long)
         SERIALIZER_FOR_POD(long long)
         SERIALIZER_FOR_POD(unsigned long long)
-        SERIALIZER_FOR_POD(float)
-        SERIALIZER_FOR_POD(double)
+		SERIALIZER_FOR_POD_FLOATINGPOINT(float)
+		SERIALIZER_FOR_POD_FLOATINGPOINT(double)
 
 
 #define SERIALIZER_FOR_STL(type) \

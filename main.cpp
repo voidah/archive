@@ -168,6 +168,9 @@ int main()
     Test(123.456);
     Test(-123.456);
 
+    // Test problem with NaN (reported by @NikishinRoman on vstudio: https://github.com/voidah/archive/issues/10)
+    Test(-0.348907441f);
+
     // Array
     std::cout << "Array..." << std::endl;
     int ii[] = {1, 2, 3, 4, 5, 6};
