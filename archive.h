@@ -28,6 +28,7 @@ For more information, please refer to <https://unlicense.org>
 #ifndef ARCHIVE_H__
 #define ARCHIVE_H__
 
+#include <climits>
 #include <stdint.h>
 #include <string>
 #include <cassert>
@@ -89,7 +90,7 @@ namespace EndianSwapper
                 static T Swap(T v)
                 {
                     if(ShouldSwap())
-                        return ((uint16_t)v >> 8) | ((uint16_t)v << 8);
+                        return (T)(((uint16_t)v >> 8) | ((uint16_t)v << 8));
                     return v;
                 }
         };
@@ -102,7 +103,7 @@ namespace EndianSwapper
                 {
                     if(ShouldSwap())
                     {
-                        return (SwapByte<uint16_t, 2>::Swap((uint32_t)v & 0xffff) << 16) | (SwapByte<uint16_t, 2>::Swap(((uint32_t)v & 0xffff0000) >> 16));
+                        return (T)((SwapByte<uint16_t, 2>::Swap((uint32_t)v & 0xffff) << 16) | (SwapByte<uint16_t, 2>::Swap(((uint32_t)v & 0xffff0000) >> 16)));
                     }
                     return v;
                 }
@@ -198,7 +199,7 @@ class Archive
         template <class T, size_t N>
             Archive& operator&(T (&v)[N])
             {
-                uint32_t len;
+                size_t len;
                 *this & len;
                 for(size_t i = 0; i < N; ++i)
                     *this & v[i];
@@ -208,7 +209,7 @@ class Archive
         template <class T, size_t N>
             const Archive& operator&(const T (&v)[N]) const
             {
-                uint32_t len = N;
+                const size_t len = N;
                 *this & len;
                 for(size_t i = 0; i < N; ++i)
                     *this & v[i];
@@ -240,7 +241,7 @@ class Archive
             if (!m_stream) { throw std::runtime_error("malformed data"); } \
 			if (EndianSwapper::SwapByteBase::ShouldSwap()) \
 			{ \
-				for (int i = 0; i < sizeof(type) / 2; ++i) \
+				for (size_t i = 0; i < sizeof(type) / 2; ++i) \
 					EndianSwapper::SwapByteBase::SwapBytes(c[i], c[sizeof(type) - 1 - i]); \
 			} \
             v = f; \
@@ -252,7 +253,7 @@ class Archive
             f = v; \
             if (EndianSwapper::SwapByteBase::ShouldSwap()) \
             { \
-                for (int i = 0; i < sizeof(type) / 2; ++i) \
+                for (size_t i = 0; i < sizeof(type) / 2; ++i) \
                     EndianSwapper::SwapByteBase::SwapBytes(c[i], c[sizeof(type) - 1 - i]); \
             } \
             m_stream.write((const char*)&c[0], sizeof(type)); \
@@ -278,9 +279,9 @@ class Archive
         template <class T> \
         Archive& operator&(type<T>& v) \
         { \
-            uint32_t len; \
+            size_t len; \
             *this & len; \
-            for(uint32_t i = 0; i < len; ++i) \
+            for(size_t i = 0; i < len; ++i) \
             { \
                 T value; \
                 *this & value; \
@@ -291,7 +292,7 @@ class Archive
         template <class T> \
         const Archive& operator&(const type<T>& v) const \
         { \
-            uint32_t len = v.size(); \
+            const size_t len = v.size(); \
             *this & len; \
             for(typename type<T>::const_iterator it = v.begin(); it != v.end(); ++it) \
             *this & *it; \
@@ -302,9 +303,9 @@ class Archive
         template <class T1, class T2> \
         Archive& operator&(type<T1, T2>& v) \
         { \
-            uint32_t len; \
+            size_t len; \
             *this & len; \
-            for(uint32_t i = 0; i < len; ++i) \
+            for(size_t i = 0; i < len; ++i) \
             { \
                 std::pair<T1, T2> value; \
                 *this & value; \
@@ -315,7 +316,7 @@ class Archive
         template <class T1, class T2> \
         const Archive& operator&(const type<T1, T2>& v) const \
         { \
-            uint32_t len = v.size(); \
+            const size_t len = v.size(); \
             *this & len; \
             for(typename type<T1, T2>::const_iterator it = v.begin(); it != v.end(); ++it) \
             *this & *it; \
@@ -346,15 +347,16 @@ class Archive
 
         Archive& operator&(std::string& v)
         {
-            uint32_t len;
+            size_t len;
             *this & len;
             v.clear();
             char buffer[4096];
-            uint32_t toRead = len;
+            size_t toRead = len;
             while(toRead != 0)
             {
-                uint32_t l = std::min(toRead, (uint32_t)sizeof(buffer));
-                m_stream.read(buffer, l);
+                const size_t l = std::min(toRead, sizeof(buffer));
+                assert(l <= (size_t)INT_MAX);
+                m_stream.read(buffer, (int)l);
                 if(!m_stream)
                     throw std::runtime_error("malformed data");
                 v += std::string(buffer, l);
@@ -365,7 +367,7 @@ class Archive
 
         const Archive& operator&(const std::string& v) const
         {
-            uint32_t len = v.length();
+            const size_t len = v.length();
             *this & len;
             m_stream.write(v.c_str(), len);
             return *this;
