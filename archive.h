@@ -241,7 +241,7 @@ class Archive
             if (!m_stream) { throw std::runtime_error("malformed data"); } \
 			if (EndianSwapper::SwapByteBase::ShouldSwap()) \
 			{ \
-				for (int i = 0; i < sizeof(type) / 2; ++i) \
+				for (size_t i = 0; i < sizeof(type) / 2; ++i) \
 					EndianSwapper::SwapByteBase::SwapBytes(c[i], c[sizeof(type) - 1 - i]); \
 			} \
             v = f; \
@@ -253,7 +253,7 @@ class Archive
             f = v; \
             if (EndianSwapper::SwapByteBase::ShouldSwap()) \
             { \
-                for (int i = 0; i < sizeof(type) / 2; ++i) \
+                for (size_t i = 0; i < sizeof(type) / 2; ++i) \
                     EndianSwapper::SwapByteBase::SwapBytes(c[i], c[sizeof(type) - 1 - i]); \
             } \
             m_stream.write((const char*)&c[0], sizeof(type)); \
